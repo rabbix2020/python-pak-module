@@ -6,9 +6,10 @@ pak_file = sys.argv[1]
 pak_file = pak_file.replace(r"\ "[0], "/")
 if not os.path.isfile(pak_file):	exit("There is no such file.")
 
-data = open("PAK1.PAK", "rb").read()
+data = open(pak_file, "rb").read()
 
 unpack_path = sys.argv[2]
+unpack_path = unpack_path.replace(r"\ "[0], "/")
 if not os.path.exists(unpack_path):	exit("There is no such directory.")
 
 current_pak = pak(data)
