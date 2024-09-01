@@ -1,4 +1,5 @@
 import struct
+from random import random
 
 class pak_header:
      def __init__(self):
@@ -10,6 +11,7 @@ class pak_header:
         if not (self.id == "PACK"):	raise TypeError("pak_header.read(): it's not a PAK file")
         self.offset = struct.unpack("i", data[4:8])[0]
         self.size = struct.unpack("i", data[8:12])[0]
+
 
 entry_size = 64
 class pak_entry:
@@ -24,7 +26,10 @@ class pak:
         files_count = self.files_count
         for i in range(files_count):
            current_entry = pak_entry()
-           current_entry.name = data[pak_head.offset+i*entry_size:pak_head.offset+i*entry_size+56].decode("ascii").replace('\0', '')
+
+           entry_name = data[pak_head.offset+i*entry_size:pak_head.offset+i*entry_size+56]
+           if b'\0' in entry_name:	entry_name = entry_name[:entry_name.index(b'\0')]
+           current_entry.name = entry_name.decode('ascii')
            current_entry.offset = struct.unpack("i", data[pak_head.offset+i*entry_size+56:pak_head.offset+i*entry_size+60])[0]
            current_entry.size = struct.unpack("i", data[pak_head.offset+i*entry_size+60:pak_head.offset+i*entry_size+64])[0]
            files.append(current_entry)
